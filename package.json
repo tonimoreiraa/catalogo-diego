@@ -1,0 +1,9 @@
+{
+  "name": "comparapreco",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/tonimoreiraa/comparapreco",
+  "author": "Toni Moreira <moreiraatoni@gmail.com>",
+  "license": "MIT",
+  "private": true
+}
