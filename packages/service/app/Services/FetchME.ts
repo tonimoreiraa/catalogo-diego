@@ -1,3 +1,4 @@
+import Category from "App/Models/Category";
 import Product from "App/Models/Product";
 import ProductCost from "App/Models/ProductCost";
 import ProductImage from "App/Models/ProductImage";
@@ -24,11 +25,15 @@ export async function FetchME()
         const texts = productData.textos[0].data
         const identifier = 'me-' + productData.codigo
         const exists = !!(await Product.findBy('identifier', identifier))
+        const categoryData = {name: texts.nombre}
+        const category = await Category.updateOrCreate(categoryData, categoryData)
+
         const product = await Product.updateOrCreate({ identifier }, {
             title: texts.titulo,
             type: texts.nombre,
             tags: texts.tags,
-            identifier
+            identifier,
+            categoryId: category.id
         })
 
         if (!exists) {

@@ -3,7 +3,7 @@ import { BaseTask } from 'adonis5-scheduler/build'
 
 export default class FetchValue extends BaseTask {
 	public static get schedule() {
-		return '1 * * * * *'
+		return '* * * * * *'
 	}
 	/**
 	 * Set enable use .lock file for block run retry task
