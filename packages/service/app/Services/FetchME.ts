@@ -7,47 +7,59 @@ import axios from "axios";
 export async function FetchME()
 {
     const source = 'mega-eletronicos'
-    var products: any = []
-
-    var response
-    var p = 1
-    while ((response && response.data.productos.length) || p == 1) {
-        response = await axios.get('https://www.megaeletronicos.com:4420/newproductos/search', { params: {
-            m: 325, s: 0, c: 0, d: 0, p,
-            o: 'desc',
-            st: 'all'
-        }})
-        products = [...products, ...response.data.productos]
-        p++
+    const brandNames = {
+        325: 'Apple',
+        865: 'Xioami',
+        106: 'Samsung',
+        1070: 'Amazon',
+        72: 'Motorola',
+        548: 'JBL'
     }
+    const brands = Object.keys(brandNames)
 
-    for (const productData of products) {
-        const texts = productData.textos[0].data
-        const identifier = 'me-' + productData.codigo
-        const exists = !!(await Product.findBy('identifier', identifier))
-        const categoryData = {name: texts.nombre}
-        const category = await Category.updateOrCreate(categoryData, categoryData)
-
-        const product = await Product.updateOrCreate({ identifier }, {
-            title: texts.titulo,
-            type: texts.nombre,
-            tags: texts.tags,
-            identifier,
-            categoryId: category.id
-        })
-
-        if (!exists) {
-            await ProductImage.createMany(productData.imagenes.map(i => ({productId: product.id, image: i})))
+    for (const brand of brands) {
+        console.log(`Importando marca: ${brandNames[brand]}`)
+        var products: any = []
+        var response
+        var p = 1
+        while ((response && response.data.productos.length) || p == 1) {
+            response = await axios.get('https://www.megaeletronicos.com:4420/newproductos/search', { params: {
+                m: brand, s: 0, c: 0, d: 0, p,
+                o: 'desc',
+                st: 'all'
+            }})
+            products = [...products, ...response.data.productos]
+            p++
         }
 
-        const costData = { productId: product.id, currency: 'dolar', source }
-        if (productData.stock) {
-            await ProductCost.updateOrCreate(costData, {...costData, cost: productData.dolar,})
-        } else {
-            await ProductCost.query().delete()
-            .where('productId', product.id)
-            .where('currency', 'dolar')
-            .where('source', source)
+        for (const productData of products) {
+            const texts = productData.textos.find(t => t.lang == 'pt').data
+            const identifier = 'me-' + productData.codigo
+            const exists = !!(await Product.findBy('identifier', identifier))
+            const categoryData = brand == '325' && !texts.nombre.includes('Apple') ? {name: 'Apple ' + texts.nombre} : {name: texts.nombre}
+            const category = await Category.updateOrCreate(categoryData, categoryData)
+
+            const product = await Product.updateOrCreate({ identifier }, {
+                title: texts.titulo,
+                type: texts.nombre,
+                tags: texts.tags,
+                identifier,
+                categoryId: category.id
+            })
+
+            if (!exists) {
+                await ProductImage.createMany(productData.imagenes.map(i => ({productId: product.id, image: i})))
+            }
+
+            const costData = { productId: product.id, currency: 'dolar', source }
+            if (productData.stock) {
+                await ProductCost.updateOrCreate(costData, {...costData, cost: productData.dolar,})
+            } else {
+                await ProductCost.query().delete()
+                .where('productId', product.id)
+                .where('currency', 'dolar')
+                .where('source', source)
+            }
         }
     }
 }
