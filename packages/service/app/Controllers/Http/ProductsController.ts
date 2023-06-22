@@ -19,8 +19,8 @@ export default class ProductsController {
             const cost = product.costs[0]?.cost
             
             if (deliveryTax && cost && tax) {
-                const baseCost = Number(cost) * ((Number(deliveryTax)/100) + 1)
-                const finalCost = baseCost * ((Number(tax)/100) + 1) * dolar
+                const baseCost = Number(cost) * dolar * ((Number(deliveryTax)/100) + 1)
+                const finalCost = baseCost * ((Number(tax)/100) + 1)
                 return {...product.serialize(), cost: Number(finalCost.toFixed(2)), costs: undefined}
             }
 
