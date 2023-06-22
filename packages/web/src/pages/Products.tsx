@@ -8,6 +8,7 @@ function Products()
 {
     const params: any = useParams()
     const [filter, setFilter] = useState('')
+    const {data: tax} = useQuery('@tax', () => api.get('/taxes/' + params.viewId))
     const {data, isLoading} = useQuery('@products', () => api.get('/products', {params: {taxId: params.viewId}}))
 
     if (isLoading) return <>Carregando...</>
@@ -28,7 +29,7 @@ function Products()
                 onChange={(event: any) => setFilter(event.target.value)}
             />
             <div className="pt-8 grid xl:grid-cols-5 2xl:grid-cols-6 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 sm:grid-cols-2 gap-3">
-                {products?.map((product: any) => <Product key={product.id} product={product} />)}
+                {products?.map((product: any) => <Product key={product.id} product={product} tax={tax} />)}
             </div>
         </div>
     </div>

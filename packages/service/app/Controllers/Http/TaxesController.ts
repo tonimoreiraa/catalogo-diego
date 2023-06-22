@@ -13,6 +13,12 @@ export default class TaxesController {
         return taxes.map(tax => tax.serialize())
     }
 
+    @bind()
+    async show({}: HttpContextContract, tax: Tax)
+    {
+        return tax.serialize()
+    }
+
     async store({request}: HttpContextContract)
     {
         const name = await request.input('name')
