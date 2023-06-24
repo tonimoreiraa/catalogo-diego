@@ -1,17 +1,15 @@
 import { useState } from "react"
 import { useQuery } from "react-query"
-import Product from "../components/Product"
 import api from "../services/api"
-import { useParams } from "react-router-dom"
+import { Layout } from "../components/Layout"
+import { Link } from "react-router-dom"
 
-function Products()
+function View()
 {
-    const params: any = useParams()
     const [filter, setFilter] = useState('')
-    const {data: tax} = useQuery('@tax', () => api.get('/taxes/' + params.viewId))
-    const {data, isLoading} = useQuery('@products', () => api.get('/products', {params: {taxId: params.viewId}}))
-
-    if (isLoading) return <>Carregando...</>
+    const {data: dolar} = useQuery('@dolar', () => api.get('/dolar'))
+    const {data: taxes} = useQuery('@taxes', () => api.get('/taxes'))
+    const {data, isLoading} = useQuery('@products', () => api.get('/products'))
 
     const products = data?.data?.filter((product: any) => {
         const strings = [filter, product.title, product.category.name].map(string => string.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase())
@@ -19,20 +17,62 @@ function Products()
         return strings.slice(1).map(string => string.includes(filterString)).includes(true)
     })
 
-    return <div className="flex justify-center px-24 py-12">
-        <div className="max-w-[1600px]">
-            <h1 className="font-bold text-2xl">Produtos</h1>
-            <input
-                type="text"
-                className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 w-full"
-                placeholder="Buscar por título, categoria..."
-                onChange={(event: any) => setFilter(event.target.value)}
-            />
-            <div className="pt-8 grid xl:grid-cols-5 2xl:grid-cols-6 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 sm:grid-cols-2 gap-3">
-                {products?.map((product: any) => <Product key={product.id} product={product} tax={tax} />)}
+    const tableTaxes = taxes && taxes.data.filter((tax: any) => tax.name !== 'Frete')
+    const deliveryTax = taxes && taxes.data.find((tax: any) => tax.name == 'Frete')
+
+    return <Layout>
+        {isLoading ? <>Carregando...</> : <div className="flex justify-center px-8 py-12 bg-white rounded-lg shadow-lg">
+            <div className="max-w-[1600px] w-full">
+                <div className="w-full flex items-center justify-between mb-2">
+                    <h1 className="font-bold text-2xl">Produtos</h1>
+                    <div className="text-right">
+                        <h1 className="text-green-500 font-semibold">{dolar?.data.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'})}</h1>
+                        <h2 className="text-sm text-green-500 font-light">Câmbio referência</h2>
+                    </div>
+                </div>
+                <input
+                    type="text"
+                    className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 w-full"
+                    placeholder="Buscar por título, categoria..."
+                    onChange={(event: any) => setFilter(event.target.value)}
+                />
+                <div className="grid grid-flow-col mt-3 gap-x-2">
+                    {taxes && taxes.data?.map((tax: any) => <Link target="_blank" to={`/views/` + tax.id} key={tax.id} className="flex items-center justify-center bg-gray-300 rounded-lg py-5 font-bold text-xl cursor-pointer hover:bg-gray-400">Visão {tax.name}</Link>)}
+                </div>
+                <div className="container mx-auto w-full mt-4">
+                    <table className="w-full bg-white border border-gray-300">
+                        <thead>
+                            <tr className="text-left">
+                                <th className="px-6 py-3 bg-gray-200 border-b">Imagem</th>
+                                <th className="px-6 py-3 bg-gray-200 border-b">Título</th>
+                                <th className="px-6 py-3 bg-gray-200 border-b">Categoria</th>
+                                <th className="px-6 py-3 bg-gray-200 border-b">Custo</th>
+                                <th className="px-6 py-3 bg-gray-200 border-b">Frete</th>
+                                <th className="px-6 py-3 bg-gray-200 border-b">Custo com frete</th>
+                                {tableTaxes?.map((tax: any) => <th key={tax.id} className="px-6 py-3 bg-gray-200 border-b">{tax.name}</th>)}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {products?.map((product: any) => {
+                                const image = product.images[0]?.image
+                                return <tr key={product.id}>
+                                    <td className="px-6 border-b">
+                                        <img className="h-full w-full object-contain rounded-lg" src={image && !image.includes('default') ? 'https://www.megaeletronicos.com:4420/img/'+ image.replace('/uploads/Product/', '').replaceAll('/', '-') : '/logo.jpeg'} />
+                                    </td>
+                                    <td className="px-6 py-4 border-b">{product.title}</td>
+                                    <td className="px-6 py-4 border-b">{product.category?.name}</td>
+                                    <td className="px-6 py-4 border-b">{product.costs[0]?.cost?.toLocaleString('pt-br', {style: 'currency', currency: 'USD'})}</td>
+                                    <td className="px-6 py-4 border-b">{product.costsByTax && product.costsByTax[deliveryTax.id]?.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}</td>
+                                    <td className="px-6 py-4 border-b">{product.costs[0]?.finalCost?.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'})}</td>
+                                    {tableTaxes?.map((tax: any) => <td key={tax.id} className="px-6 py-4 border-b">{product.costsByTax && product.costsByTax[tax.id]?.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}</td>)}
+                                </tr>
+                            })}
+                        </tbody>
+                    </table>
+                    </div>
             </div>
-        </div>
-    </div>
+        </div>}
+    </Layout>
 }
 
-export default Products;
+export default View;

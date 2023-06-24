@@ -21,6 +21,7 @@
     "@adonisjs/assembler": "^5.9.5",
     "@japa/preset-adonis": "^1.2.0",
     "@japa/runner": "^2.5.1",
+    "@types/jsdom": "^21.1.1",
     "@types/proxy-addr": "^2.0.0",
     "@types/source-map-support": "^0.5.6",
     "adonis-preset-ts": "^2.1.0",
@@ -32,12 +33,14 @@
     "youch-terminal": "^2.2.0"
   },
   "dependencies": {
+    "@adonisjs/auth": "^8.2.3",
     "@adonisjs/core": "^5.8.0",
     "@adonisjs/lucid": "^18.4.0",
     "@adonisjs/repl": "^3.1.0",
     "@adonisjs/route-model-binding": "^1.0.1",
     "adonis5-scheduler": "^2.0.2",
     "axios": "^1.4.0",
+    "jsdom": "^22.1.0",
     "luxon": "^3.3.0",
     "pg": "^8.11.0",
     "proxy-addr": "^2.0.7",

@@ -4,8 +4,17 @@ import Tax from "App/Models/Tax";
 import Category from 'App/Models/Category';
 import { bind } from '@adonisjs/route-model-binding';
 import CategoryTax from '../../Models/CategoryTax';
+import axios from 'axios';
 
 export default class TaxesController {
+
+    async getCurrentDolar()
+    {
+        var dolar = (await axios.get('https://economia.awesomeapi.com.br/last/USD-BRL')).data.USDBRL.ask
+        dolar = dolar * (1.035)
+
+        return dolar
+    }
 
     async index()
     {
