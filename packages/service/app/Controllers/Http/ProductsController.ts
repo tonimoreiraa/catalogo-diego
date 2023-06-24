@@ -25,7 +25,7 @@ export default class ProductsController {
             const costsByTax = auth.user && cost ? Object.fromEntries(taxes.map(tax => {
                 const baseCost = Number(cost) * dolar * ((Number(deliveryTax)/100) + (tax.tax.name == 'Frete' ? 0 : 1))
                 const finalCost = baseCost * (tax.tax.name == 'Frete' ? 1 : ((Number(tax.value)/100) + 1))
-                return [tax.id, Number(finalCost.toFixed(2))]
+                return [tax.tax.id, Number(finalCost.toFixed(2))]
             })) : undefined
             
             if (deliveryTax && cost && tax) {
