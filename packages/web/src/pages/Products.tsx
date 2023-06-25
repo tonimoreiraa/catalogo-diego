@@ -26,8 +26,8 @@ function View()
                 <div className="w-full flex items-center justify-between mb-2">
                     <h1 className="font-bold text-2xl">Produtos</h1>
                     <div className="text-right">
-                        <h1 className="text-green-500 font-semibold">{dolar?.data.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'})}</h1>
-                        <h2 className="text-sm text-green-500 font-light">Câmbio referência</h2>
+                        <h1 className="text-green-500 font-semibold text-xs md:text-base">{dolar?.data.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'})}</h1>
+                        <h2 className="text-xs md:text-sm text-green-500 font-light">Câmbio referência</h2>
                     </div>
                 </div>
                 <input
@@ -36,11 +36,11 @@ function View()
                     placeholder="Buscar por título, categoria..."
                     onChange={(event: any) => setFilter(event.target.value)}
                 />
-                <div className="grid grid-flow-col mt-3 gap-x-2">
-                    {taxes && taxes.data?.map((tax: any) => <Link target="_blank" to={`/views/` + tax.id} key={tax.id} className="flex items-center justify-center bg-gray-300 rounded-lg py-5 font-bold text-xl cursor-pointer hover:bg-gray-400">Visão {tax.name}</Link>)}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-3 gap-2">
+                    {taxes && taxes.data?.map((tax: any) => <Link target="_blank" to={`/views/` + tax.id} key={tax.id} className="flex items-center justify-center bg-gray-300 rounded-lg py-2 md:py-5 font-bold text-sm md:text-xl cursor-pointer hover:bg-gray-400 text-center">Visão {tax.name}</Link>)}
                 </div>
-                <div className="container mx-auto w-full mt-4">
-                    <table className="w-full bg-white border border-gray-300">
+                <div className="container mx-auto w-full mt-4 overflow-x-auto">
+                    <table className="w-full bg-white border border-gray-300 text-xs md:text-sm">
                         <thead>
                             <tr className="text-left">
                                 <th className="px-6 py-3 bg-gray-200 border-b">Imagem</th>

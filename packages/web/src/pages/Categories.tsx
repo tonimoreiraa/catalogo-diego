@@ -36,42 +36,44 @@ function Categories()
             <div className="p-8 flex flex-col items-center justify-center">
                 <div className="flex flex-row justify-between items-center w-full mb-4">
                     <h1 className="font-semibold text-2xl">Categorias</h1>
-                    <button className="bg-blue-500 mt-4 text-white px-4 py-2 rounded shadow">Salvar Alterações</button>
+                    <button className="bg-blue-500 mt-4 text-white px-4 py-2 rounded shadow text-sm">Salvar Alterações</button>
                 </div>
                 {!categories && 'Carregando categorias...'}
-                <table className="max-w-[1000px]">
-                    <thead>
-                        <tr className="text-left">
-                        <th className="py-2">Categoria</th>
-                        {taxes?.data?.map((tax: any) => (
-                            <th key={tax.id} className="py-2">
-                            {tax.name}
-                            </th>
-                        ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {categories?.data?.map((category: any) => (
-                        <tr key={category.id}>
-                            <td className="border py-2 px-4">{category.name}</td>
-                            {taxes?.data?.map((tax: any) => (
-                            <td key={tax.id} className="border">
-                                <div className="flex items-center px-2">
-                                    <input
-                                        type="number"
-                                        defaultValue={category.taxes.find((t: any) => t.tax_id == tax.id)?.value}
-                                        className="w-full text-right py-1 pl-2 pr-0 border-none text-sm"
-                                        {...register(`categories.${category.id}.${tax.id}.value`)}
-                                    />
-                                    <span className="ml-1">%</span>
-                                </div>
-                            </td>
+                <div className="container mx-auto w-full mt-4 overflow-x-auto">
+                    <table className="w-full bg-white border border-gray-300 text-xs md:text-sm">
+                        <thead>
+                            <tr className="text-left">
+                                <th className="border py-2 px-4">Categoria</th>
+                                {taxes?.data?.map((tax: any) => (
+                                    <th key={tax.id} className="border py-2 px-4">
+                                    {tax.name}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {categories?.data?.map((category: any) => (
+                            <tr key={category.id}>
+                                <td className="border py-2 px-4">{category.name}</td>
+                                {taxes?.data?.map((tax: any) => (
+                                <td key={tax.id} className="border">
+                                    <div className="flex items-center px-2">
+                                        <input
+                                            type="number"
+                                            defaultValue={category.taxes.find((t: any) => t.tax_id == tax.id)?.value}
+                                            className="w-full text-right py-1 pl-2 pr-0 border-none text-sm"
+                                            {...register(`categories.${category.id}.${tax.id}.value`)}
+                                        />
+                                        <span className="ml-1">%</span>
+                                    </div>
+                                </td>
+                                ))}
+                            </tr>
                             ))}
-                        </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <button className="bg-blue-500 mt-4 text-white px-4 py-2 rounded shadow">Salvar Alterações</button>
+                        </tbody>
+                    </table>
+                </div>
+                <button className="bg-blue-500 mt-4 text-white px-4 py-2 rounded shadow text-sm">Salvar Alterações</button>
             </div>
         </form>
     </Layout>
