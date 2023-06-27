@@ -44,7 +44,7 @@ export async function FetchME()
                 type: texts.nombre,
                 tags: texts.tags,
                 identifier,
-                categoryId: category.id
+                categoryId: category.id,
             })
 
             if (!exists) {
