@@ -36,14 +36,16 @@ export async function FetchVV()
             identifier: 'vv-' + item.codigo,
             title: item.nome,
             type: categoryName,
-            categoryId: category.id
+            categoryId: category.id,
+            cost: Number(item.valor.slice(3).replace('.', '').replace(',', '.')),
+            costCurrency: 'USD'
         }))
         const products = await Product.updateOrCreateMany('identifier', payload)
 
         for (const product of products) {
             const productData = categoryItems.find(item => product.identifier.includes(item.codigo))
             const cost = Number(productData.valor.slice(3).replace('.', '').replace(',', '.'))
-            const costData = { productId: product.id, currency: 'dolar', source: 'visao-vip' }
+            const costData = { productId: product.id, currency: 'dolar', source: 'VisãoVip' }
             await ProductCost.updateOrCreate(costData, {...costData, cost})
         }
     }

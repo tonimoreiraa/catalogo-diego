@@ -6,7 +6,7 @@ import axios from "axios";
 
 export async function FetchME()
 {
-    const source = 'mega-eletronicos'
+    const source = 'Mega Eletrônicos'
     const brandNames = {
         325: 'Apple',
         865: 'Xioami',
@@ -45,6 +45,8 @@ export async function FetchME()
                 tags: texts.tags,
                 identifier,
                 categoryId: category.id,
+                cost: productData.dolar,
+                costCurrency: 'USD'
             })
 
             if (!exists) {

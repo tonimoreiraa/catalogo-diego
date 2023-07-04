@@ -1,44 +1,78 @@
-import { useState } from "react"
 import { useQuery } from "react-query"
-import api from "../services/api"
+import api, { catchApiErrorMessage } from "../services/api"
 import { Layout } from "../components/Layout"
-import { Link } from "react-router-dom"
+import { IoChevronBack, IoChevronForward, IoCloudUploadOutline, IoDownloadOutline } from 'react-icons/io5';
+import { toast } from "react-hot-toast";
+import { useEffect, useState } from "react";
 
-function View()
+function Products()
 {
-    const [filter, setFilter] = useState('')
-    const {data: dolar} = useQuery('@dolar', () => api.get('/dolar'))
-    const {data: taxes} = useQuery('@taxes', () => api.get('/taxes'))
-    const {data, isLoading} = useQuery('@products', () => api.get('/products'))
+    const [page, setPage] = useState('/products')
+    const {data, isLoading, refetch} = useQuery('@products', () => api.get(page))
 
-    const products = data?.data?.filter((product: any) => {
-        const strings = [filter, product.title, product.category.name].map(string => string.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase())
-        const filterString = strings[0]
-        return strings.slice(1).map(string => string.includes(filterString)).includes(true)
-    })
+    useEffect(() => {refetch()}, [page])
 
-    const tableTaxes = taxes && taxes.data.filter((tax: any) => tax.name !== 'Frete')
-    const deliveryTax = taxes && taxes.data.find((tax: any) => tax.name == 'Frete')
+    async function exportData()
+    {
+        const response = await api.get('/products/export', { responseType: 'blob'})
+
+        // Download
+        const link = document.createElement('a')
+        link.href = URL.createObjectURL(new Blob([response.data]))
+        link.setAttribute('download', 'produtos.csv')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+    }
+
+    async function handleImportData(event: any)
+    {
+        const file = event.target.files[0]
+        if (file && window.confirm(`Você deseja importar o arquivo ${file.name}?`)) {
+            const data = new FormData()
+            data.append('data', file)
+            
+            const response = api.post('/products/import', data)
+            toast.promise(response, {
+                error: catchApiErrorMessage,
+                loading: 'Importando produtos...',
+                success: () => {
+                    refetch()
+                    return 'Produtos importados com sucesso!'
+                }
+            })
+        }
+    }
 
     return <Layout>
         {isLoading ? <>Carregando...</> : <div className="flex justify-center px-8 py-12 bg-white rounded-lg shadow-lg">
             <div className="max-w-[1600px] w-full">
                 <div className="w-full flex items-center justify-between mb-2">
                     <h1 className="font-bold text-2xl">Produtos</h1>
-                    <div className="text-right">
-                        <h1 className="text-green-500 font-semibold text-xs md:text-base">{dolar?.data.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'})}</h1>
-                        <h2 className="text-xs md:text-sm text-green-500 font-light">Câmbio referência</h2>
+                    <div className="grid grid-flow-col gap-x-2">
+                        <button onClick={exportData} className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 items-center gap-x-2">
+                            <IoDownloadOutline size={20} />
+                            Exportar dados
+                        </button>
+                        <input
+                            type="file"
+                            onChange={handleImportData}
+                            name="import-csv"
+                            id="import-csv"
+                            className="hidden"
+                            accept="text/csv"
+                        />
+                        <label htmlFor="import-csv" className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 items-center gap-x-2">
+                            <IoCloudUploadOutline size={20} />
+                            Importar dados
+                        </label>
                     </div>
                 </div>
                 <input
                     type="text"
                     className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 w-full"
                     placeholder="Buscar por título, categoria..."
-                    onChange={(event: any) => setFilter(event.target.value)}
                 />
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-3 gap-2">
-                    {taxes && taxes.data?.map((tax: any) => <Link target="_blank" to={`/views/` + tax.id} key={tax.id} className="flex items-center justify-center bg-gray-300 rounded-lg py-2 md:py-5 font-bold text-sm md:text-xl cursor-pointer hover:bg-gray-400 text-center">Visão {tax.name}</Link>)}
-                </div>
                 <div className="container mx-auto w-full mt-4 overflow-x-auto">
                     <table className="w-full bg-white border border-gray-300 text-xs md:text-sm">
                         <thead>
@@ -47,32 +81,42 @@ function View()
                                 <th className="px-6 py-3 bg-gray-200 border-b">Título</th>
                                 <th className="px-6 py-3 bg-gray-200 border-b">Categoria</th>
                                 <th className="px-6 py-3 bg-gray-200 border-b">Custo</th>
-                                <th className="px-6 py-3 bg-gray-200 border-b">Frete</th>
-                                <th className="px-6 py-3 bg-gray-200 border-b">Custo com frete</th>
-                                {tableTaxes?.map((tax: any) => <th key={tax.id} className="px-6 py-3 bg-gray-200 border-b">{tax.name}</th>)}
+                                <th className="px-6 py-3 bg-gray-200 border-b">Taxa</th>
+                                <th className="px-6 py-3 bg-gray-200 border-b">Preço de venda</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {products?.map((product: any) => {
+                            {data?.data?.data.map((product: any) => {
                                 const image = product.images[0]?.image
                                 return <tr key={product.id}>
                                     <td className="px-6 border-b">
-                                        <img className="h-full w-full object-contain rounded-lg" src={image && !image.includes('default') ? 'https://www.megaeletronicos.com:4420/img/'+ image.replace('/uploads/Product/', '').replaceAll('/', '-') : '/logo.jpeg'} />
+                                        <img className="h-full w-full object-contain rounded-lg max-h-10" src={image && !image.includes('default') ? 'https://www.megaeletronicos.com:4420/img/'+ image.replace('/uploads/Product/', '').replaceAll('/', '-') : '/logo.jpeg'} />
                                     </td>
                                     <td className="px-6 py-4 border-b">{product.title}</td>
                                     <td className="px-6 py-4 border-b">{product.category?.name}</td>
-                                    <td className="px-6 py-4 border-b">{product.costs[0]?.cost?.toLocaleString('pt-br', {style: 'currency', currency: 'USD'})}</td>
-                                    <td className="px-6 py-4 border-b">{product.costsByTax && product.costsByTax[deliveryTax.id]?.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}</td>
-                                    <td className="px-6 py-4 border-b">{product.costs[0]?.finalCost?.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'})}</td>
-                                    {tableTaxes?.map((tax: any) => <td key={tax.id} className="px-6 py-4 border-b">{product.costsByTax && product.costsByTax[tax.id]?.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}</td>)}
+                                    <td className="px-6 py-4 border-b">{Number(product.cost).toLocaleString('pt-br', {style: 'currency', currency: product.cost_currency})}</td>
+                                    <td className="px-6 py-4 border-b">{Number(product.tax)}%</td>
+                                    <td className="px-6 py-4 border-b">{Number(product.price).toLocaleString('pt-br', {style: 'currency', currency: product.price_currency})}</td>
                                 </tr>
                             })}
                         </tbody>
                     </table>
+                    <div className="w-full flex justify-end">
+                        <div className="flex items-center justify-start gap-x-2 mt-4">
+                            <h1>Total de itens encontrados: {data?.data?.meta?.total}</h1>
+                            {!!data?.data?.meta?.previous_page_url && <button className="bg-neutral-200 rounded-lg h-8 w-8 flex items-center justify-center" onClick={() => setPage('/products' + data?.data?.meta?.previous_page_url)}>
+                                <IoChevronBack />
+                            </button>}
+                            <h1>Página {data?.data?.meta?.current_page} de {data?.data?.meta?.last_page}</h1>
+                            {!!data?.data?.meta?.next_page_url && <button className="bg-neutral-200 rounded-lg h-8 w-8 flex items-center justify-center" onClick={() => setPage('/products' + data?.data?.meta?.next_page_url)}>
+                                <IoChevronForward />
+                            </button>}
+                        </div>
                     </div>
+                </div>
             </div>
         </div>}
     </Layout>
 }
 
-export default View;
+export default Products;

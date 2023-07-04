@@ -1,5 +1,85 @@
 {
   "commands": {
+    "create:sheet": {
+      "settings": {
+        "loadApp": false,
+        "stayAlive": false
+      },
+      "commandPath": "./commands/CreateSheet",
+      "commandName": "create:sheet",
+      "description": "",
+      "args": [],
+      "aliases": [],
+      "flags": []
+    },
+    "sheet:create": {
+      "settings": {
+        "loadApp": false,
+        "stayAlive": false
+      },
+      "commandPath": "./commands/SheetCreate",
+      "commandName": "sheet:create",
+      "description": "Create URL to a new Google Spreadsheet document",
+      "args": [
+        {
+          "type": "string",
+          "propertyName": "title",
+          "name": "title",
+          "required": true
+        }
+      ],
+      "aliases": [],
+      "flags": []
+    },
+    "sheet:link": {
+      "settings": {
+        "loadApp": false,
+        "stayAlive": false
+      },
+      "commandPath": "./commands/SheetLink",
+      "commandName": "sheet:link",
+      "description": "",
+      "args": [],
+      "aliases": [],
+      "flags": []
+    },
+    "sheet:permission": {
+      "settings": {
+        "loadApp": false,
+        "stayAlive": false
+      },
+      "commandPath": "./commands/SheetPermission",
+      "commandName": "sheet:permission",
+      "description": "Give permission to document",
+      "args": [
+        {
+          "type": "string",
+          "propertyName": "emailAddress",
+          "name": "emailAddress",
+          "required": true
+        },
+        {
+          "type": "string",
+          "propertyName": "permission",
+          "name": "permission",
+          "required": true
+        }
+      ],
+      "aliases": [],
+      "flags": []
+    },
+    "sheet:sync": {
+      "settings": {
+        "loadApp": true,
+        "stayAlive": false
+      },
+      "commandPath": "./commands/SheetSync",
+      "commandName": "sheet:sync",
+      "description": "",
+      "args": [],
+      "aliases": [],
+      "flags": []
+    },
     "dump:rcfile": {
       "settings": {},
       "commandPath": "@adonisjs/core/build/commands/DumpRc",

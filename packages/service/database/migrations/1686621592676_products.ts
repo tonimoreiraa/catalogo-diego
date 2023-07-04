@@ -12,7 +12,10 @@ export default class extends BaseSchema {
       table.string('identifier').notNullable()
       table.string('description')
       table.string('tags')
-      table.string('data')
+
+      table.decimal('cost', 10, 2)
+      table.string('cost_currency')
+      table.integer('tax')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

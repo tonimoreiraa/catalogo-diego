@@ -18,7 +18,7 @@ function AppRoutes()
             <Route path="/auth/login" element={<SignIn />} />
             <Route path="*" element={<Navigate to="/auth/login" />} />
         </>}
-        <Route path="/views/:viewId" element={<View />} />
+        <Route path="/view" element={<View />} />
     </Routes>
 }
 
