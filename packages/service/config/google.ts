@@ -6,9 +6,9 @@ export const credentials: GoogleAuthOptions = {
     scopes: ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive'],
 }
 
-type SpreadsheetType = {
+type SpreadsheetType = () => {
     spreadsheetId: string,
     spreadsheetUrl: string,
 }
 
-export const spreadsheet: SpreadsheetType = require('../sheet-data.json')
+export const spreadsheet: SpreadsheetType = () => require('../sheet-data.json')

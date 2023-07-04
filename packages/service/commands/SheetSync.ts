@@ -35,10 +35,11 @@ export default class SheetSync extends BaseCommand {
   public async run() {
     const auth = new google.auth.GoogleAuth(credentials)
     const sheets = google.sheets({ version: 'v4', auth })
+    const s = spreadsheet()
 
     // Busca título das páginas do documento
     const { data: pagesData } = await sheets.spreadsheets.get({
-      spreadsheetId: spreadsheet.spreadsheetId,
+      spreadsheetId: s.spreadsheetId,
       fields: 'sheets.properties.title',
     })
     const pages = pagesData.sheets?.map((sheet) => sheet.properties?.title)
@@ -51,7 +52,7 @@ export default class SheetSync extends BaseCommand {
     for (const provider of providers) {
       if (!pages?.includes(provider)) {
         await sheets.spreadsheets.batchUpdate({
-          spreadsheetId: spreadsheet.spreadsheetId,
+          spreadsheetId: s.spreadsheetId,
           requestBody: {
             requests: [
               { addSheet: { properties: { title: provider } } },
@@ -64,7 +65,7 @@ export default class SheetSync extends BaseCommand {
       const range = `${provider}!A1:${String.fromCharCode(65 + data[0].length - 1)}${data.length}`
 
       await sheets.spreadsheets.values.update({
-        spreadsheetId: spreadsheet.spreadsheetId,
+        spreadsheetId: spreadsheet().spreadsheetId,
         range,
         valueInputOption: 'USER_ENTERED',
         resource: {values: data},

@@ -40,16 +40,17 @@ export default class SheetPermission extends BaseCommand {
   public async run() {
     const auth = new google.auth.GoogleAuth(credentials)
     const drive = google.drive({ version: 'v3', auth })
+    const s = spreadsheet()
     await drive.permissions.create({
       requestBody: {
         role: this.permission,
         type: 'user',
         emailAddress: this.emailAddress,
       },
-      fileId: spreadsheet.spreadsheetId,
+      fileId: s.spreadsheetId,
       fields: 'id'
     })
 
-    this.logger.info(`Permissão de "${this.permission}" concedida para ${this.emailAddress}. Acesse em ${spreadsheet.spreadsheetUrl}.`)
+    this.logger.info(`Permissão de "${this.permission}" concedida para ${this.emailAddress}. Acesse em ${s.spreadsheetUrl}.`)
   }
 }

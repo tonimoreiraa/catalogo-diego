@@ -29,6 +29,6 @@ export default class SheetLink extends BaseCommand {
   }
 
   public async run() {
-    this.logger.info(spreadsheet.spreadsheetUrl)
+    this.logger.info(spreadsheet().spreadsheetUrl)
   }
 }
