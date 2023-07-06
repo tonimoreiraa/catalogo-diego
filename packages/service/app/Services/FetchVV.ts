@@ -1,16 +1,26 @@
 import axios from "axios"
 import xlsx from 'node-xlsx';
 import { JSDOM } from 'jsdom'
-
 import Logger from '@ioc:Adonis/Core/Logger'
 import Product from "App/Models/Product";
 import ProductCost from "App/Models/ProductCost";
 import Category from "App/Models/Category";
+import { credentials, spreadsheet } from "../../config/google";
+import { google } from "googleapis";
 
 export async function FetchVV()
 {
-    const categoryNames = ['apple']
+    const source = 'Visão Vip'
+    const auth = new google.auth.GoogleAuth(credentials)
+    const sheets = google.sheets({ version: 'v4', auth })
+    const s = spreadsheet()
 
+    const d = await sheets.spreadsheets.values.get({
+        spreadsheetId: s.spreadsheetId,
+        range: `Categoria!A1:Z100`,
+    })
+    const categoryNames = d.data.values?.filter(i => i[2] == source).map(i => i[1]) ?? []
+    
     const main = await axios.get('https://www.visaovip.com/lista-preco')
     const dom = new JSDOM(main.data)
     /* @ts-ignore */
@@ -31,7 +41,7 @@ export async function FetchVV()
         const category = await Category.updateOrCreate({name: categoryName}, {name: categoryName})
 
         const categoryItems = entries.filter(entry => entry.nome.toLowerCase().includes(categoryName))
-        Logger.info(`Carregando categoria ${categoryName} com ${categoryItems.length} itens.`)
+        Logger.info(`Carregando categoria ${categoryName} com ${categoryItems.length} itens de ${source}.`)
         const payload = categoryItems.map(item => ({
             identifier: 'vv-' + item.codigo,
             title: item.nome,

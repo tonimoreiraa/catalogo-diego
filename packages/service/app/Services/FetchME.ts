@@ -2,23 +2,30 @@ import Category from "App/Models/Category";
 import Product from "App/Models/Product";
 import ProductCost from "App/Models/ProductCost";
 import ProductImage from "App/Models/ProductImage";
+import { credentials, spreadsheet } from "../../config/google";
 import axios from "axios";
+import { google } from "googleapis";
+import Logger from '@ioc:Adonis/Core/Logger'
 
 export async function FetchME()
 {
     const source = 'Mega Eletrônicos'
-    const brandNames = {
-        325: 'Apple',
-        865: 'Xioami',
-        106: 'Samsung',
-        1070: 'Amazon',
-        72: 'Motorola',
-        548: 'JBL'
-    }
+    const auth = new google.auth.GoogleAuth(credentials)
+    const sheets = google.sheets({ version: 'v4', auth })
+    const s = spreadsheet()
+
+    const data = await sheets.spreadsheets.values.get({
+        spreadsheetId: s.spreadsheetId,
+        range: `Categoria!A1:Z100`,
+    })
+    
+    /* @ts-ignore */  
+    const brandNames = Object.fromEntries(data.data.values?.filter(item => item[2] == source).map(item => [Number(item[1]), item[3]]))
+
     const brands = Object.keys(brandNames)
 
     for (const brand of brands) {
-        console.log(`Importando marca: ${brandNames[brand]}`)
+        Logger.info(`Importando marca: ${brandNames[brand]} de ${source}`)
         var products: any = []
         var response
         var p = 1

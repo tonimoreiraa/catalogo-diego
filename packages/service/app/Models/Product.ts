@@ -52,6 +52,7 @@ export default class Product extends BaseModel {
 
   public getPrice(dolar: number)
   {
+    if (!this.tax) return 0
     return Number(this.cost)*dolar*(1 + Number(this.tax)/100)
   }
 
