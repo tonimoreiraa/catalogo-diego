@@ -26,7 +26,7 @@ function View()
                 <IoRefresh />
             </div> 
         </div>}
-        <div className="flex justify-center px-24 py-12">
+        <div className="flex justify-center md:px-24 px-8 py-12">
         <div className="max-w-[1600px]">
             <h1 className="font-bold text-2xl">Produtos</h1>
             <div className="flex gap-x-2">

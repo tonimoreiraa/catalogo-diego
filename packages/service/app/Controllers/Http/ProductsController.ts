@@ -4,6 +4,7 @@ import TaxesController from './TaxesController'
 const csvSeparator = ';'
 import fs from 'fs/promises'
 import {parse as csvParser} from 'csv-parse/sync'
+import { bind } from '@adonisjs/route-model-binding'
 export default class ProductsController {
 
     async export({response}: HttpContextContract)
@@ -64,6 +65,18 @@ export default class ProductsController {
         products.rows = products.rows.map(data => ({...data.serialize(), price: data.getPrice(dolar), price_currency: 'BRL'}))
 
         return products
+    }
+
+    @bind()
+    async show({}: HttpContextContract, product: Product)
+    {
+        const dolar = await new TaxesController().getCurrentDolar()
+        await product.load('category')
+        await product.load('costs')
+        await product.load('images')
+        
+
+        return {...product.serialize(), price: product.getPrice(dolar)}
     }
 
 }
