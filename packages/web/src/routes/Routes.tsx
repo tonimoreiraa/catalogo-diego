@@ -14,13 +14,13 @@ function AppRoutes()
         {auth.authenticated ? <>
             <Route path="/categories" element={<Categories />} />
             <Route path="/products" element={<Products />} />
-            <Route path="/products/:productId" element={<ProductPage />} />
             <Route path="*" element={<Navigate to="/products" />} />
         </> : <>
             <Route path="/auth/login" element={<SignIn />} />
             <Route path="*" element={<Navigate to="/auth/login" />} />
         </>}
         <Route path="/view" element={<View />} />
+        <Route path="/products/:productId" element={<ProductPage />} />
     </Routes>
 }
 
