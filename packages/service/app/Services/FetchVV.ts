@@ -50,6 +50,8 @@ export async function FetchVV()
             cost: Number(item.valor.slice(3).replace('.', '').replace(',', '.')),
             costCurrency: 'USD'
         }))
+        console.table(payload)
+
         const products = await Product.updateOrCreateMany('identifier', payload)
 
         for (const product of products) {
