@@ -5,6 +5,7 @@ import { useAuth } from "../contexts/AuthContext";
 import SignIn from "../pages/SignIn";
 import View from "../pages/View";
 import ProductPage from "../pages/Product";
+import Main from "../pages/Main";
 
 function AppRoutes()
 {
@@ -19,8 +20,9 @@ function AppRoutes()
             <Route path="/auth/login" element={<SignIn />} />
             <Route path="*" element={<Navigate to="/auth/login" />} />
         </>}
-        <Route path="/view" element={<View />} />
+        <Route path="/search" element={<View />} />
         <Route path="/products/:productId" element={<ProductPage />} />
+        <Route path="/" element={<Main />} />
     </Routes>
 }
 

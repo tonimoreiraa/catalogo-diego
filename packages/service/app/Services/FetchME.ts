@@ -6,6 +6,7 @@ import { credentials, spreadsheet } from "../../config/google";
 import axios from "axios";
 import { google } from "googleapis";
 import Logger from '@ioc:Adonis/Core/Logger'
+import Brand from "App/Models/Brand";
 
 export async function FetchME()
 {
@@ -24,14 +25,18 @@ export async function FetchME()
 
     const brands = Object.keys(brandNames)
 
-    for (const brand of brands) {
-        Logger.info(`Importando marca: ${brandNames[brand]} de ${source}`)
+    for (const brandMeId of brands) {
+
+        const brandName = brandNames[brandMeId]
+        const brand = await Brand.updateOrCreate({name: brandName}, {name: brandName})
+
+        Logger.info(`Importando marca: ${brandName} de ${source}`)
         var products: any = []
         var response
         var p = 1
         while ((response && response.data.productos.length) || p == 1) {
             response = await axios.get('https://www.megaeletronicos.com:4420/newproductos/search', { params: {
-                m: brand, s: 0, c: 0, d: 0, p,
+                m: brandMeId, s: 0, c: 0, d: 0, p,
                 o: 'desc',
                 st: 'all'
             }})
@@ -40,10 +45,14 @@ export async function FetchME()
         }
 
         for (const productData of products) {
+
+            // busca textos do Mega Eletrônicos
             const texts = productData.textos.find(t => t.lang == 'pt').data
             const identifier = 'me-' + productData.codigo
+            // verifica se já existe
             const exists = !!(await Product.findBy('identifier', identifier))
-            const categoryData = brand == '325' && !texts.nombre.includes('Apple') ? {name: 'Apple ' + texts.nombre} : {name: texts.nombre}
+            
+            const categoryData = brandMeId == '325' && !texts.nombre.toLowerCase().includes('apple') ? {name: 'Apple ' + texts.nombre.split(' ').filter(i => !/\d/.test(i)).slice(0,2).join(' ')} : {name: texts.nombre.split(' ').filter(i => !/\d/.test(i)).slice(0,3).join(' ')}
             const category = await Category.updateOrCreate(categoryData, categoryData)
 
             const product = await Product.updateOrCreate({ identifier }, {
@@ -53,11 +62,12 @@ export async function FetchME()
                 identifier,
                 categoryId: category.id,
                 cost: productData.dolar,
-                costCurrency: 'USD'
+                costCurrency: 'USD',
+                brandId: brand.id
             })
 
             if (!exists) {
-                await ProductImage.createMany(productData.imagenes.map(i => ({productId: product.id, image: i})))
+                await ProductImage.createMany(productData.imagenes.map(i => ({productId: product.id, image: 'https://www.megaeletronicos.com:4420/img/'+ i.replace('/uploads/Product/', '').replaceAll('/', '-')})))
             }
 
             const costData = { productId: product.id, currency: 'dolar', source }

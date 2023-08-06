@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import api, { catchApiErrorMessage } from "../services/api";
 import { useForm } from "react-hook-form";
-import { Layout } from "../components/Layout";
+import { Layout } from "../components/AdminLayout";
 import { toast } from "react-hot-toast";
 
 function parseForm(obj: any) {

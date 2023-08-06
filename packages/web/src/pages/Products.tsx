@@ -1,6 +1,6 @@
 import { useQuery } from "react-query"
 import api, { catchApiErrorMessage } from "../services/api"
-import { Layout } from "../components/Layout"
+import { Layout } from "../components/AdminLayout"
 import { IoChevronBack, IoChevronForward, IoCloudUploadOutline, IoDownloadOutline } from 'react-icons/io5';
 import { toast } from "react-hot-toast";
 import { useEffect, useState } from "react";

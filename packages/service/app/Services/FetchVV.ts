@@ -2,8 +2,6 @@ import axios from "axios"
 import xlsx from 'node-xlsx';
 import { JSDOM } from 'jsdom'
 import Logger from '@ioc:Adonis/Core/Logger'
-import Product from "App/Models/Product";
-import ProductCost from "App/Models/ProductCost";
 import Category from "App/Models/Category";
 import { credentials, spreadsheet } from "../../config/google";
 import { google } from "googleapis";
@@ -48,17 +46,17 @@ export async function FetchVV()
             type: categoryName,
             categoryId: category.id,
             cost: Number(item.valor.slice(3).replace('.', '').replace(',', '.')),
-            costCurrency: 'USD'
+            costCurrency: 'USD',
+            // brandId: brand.id
         }))
-        console.table(payload)
 
-        const products = await Product.updateOrCreateMany('identifier', payload)
+        // const products = await Product.updateOrCreateMany('identifier', payload)
 
-        for (const product of products) {
-            const productData = categoryItems.find(item => product.identifier.includes(item.codigo))
-            const cost = Number(productData.valor.slice(3).replace('.', '').replace(',', '.'))
-            const costData = { productId: product.id, currency: 'dolar', source: 'VisãoVip' }
-            await ProductCost.updateOrCreate(costData, {...costData, cost})
-        }
+        // for (const product of products) {
+        //     const productData = categoryItems.find(item => product.identifier.includes(item.codigo))
+        //     const cost = Number(productData.valor.slice(3).replace('.', '').replace(',', '.'))
+        //     const costData = { productId: product.id, currency: 'dolar', source: 'VisãoVip' }
+        //     await ProductCost.updateOrCreate(costData, {...costData, cost})
+        // }
     }
 }

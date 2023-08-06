@@ -1,8 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, HasMany, column, hasMany } from '@ioc:Adonis/Lucid/Orm'
-import CategoryTax from 'App/Models/CategoryTax'
+import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
-export default class Category extends BaseModel {
+export default class Brand extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
@@ -11,12 +10,6 @@ export default class Category extends BaseModel {
 
   @column()
   public name: string
-
-  @column()
-  public percentage: number
-
-  @hasMany(() => CategoryTax)
-  public taxes: HasMany<typeof CategoryTax>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

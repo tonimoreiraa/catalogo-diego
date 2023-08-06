@@ -15,3 +15,4 @@ Route.group(() => {
 
 Route.resource('/products', 'ProductsController')
 Route.resource('/taxes', 'TaxesController')
+Route.resource('/brands', 'BrandsController')
