@@ -44,6 +44,31 @@ export default class ProductsController {
         return response.badRequest({message: 'Arquivo inválido.'})
     }
 
+    async recu({response, request}: HttpContextContract)
+    {
+        const file = request.file('data', {extnames: ['csv']})
+
+        if (file && file.tmpPath) {
+            const data: any = csvParser((await fs.readFile(file.tmpPath)).toString('utf-8'), {
+                columns: true,
+                skip_empty_lines: true,
+            })
+            .map(record => Object.fromEntries(Object.entries(record).filter(entry => entry[1] != '' && !/dolar|price/.test(entry[0]))))
+
+            for (const entry of data) {
+                const product = await Product.query()
+                    .where('identifier', entry.identifier)
+                    .first()
+                if (product && entry.tax) {
+                    product.tax = entry.tax
+                    await product.save()
+                }
+            }
+        }
+
+        return response.badRequest({message: 'Arquivo inválido.'})
+    }
+
     async index({request}: HttpContextContract)
     {
         const dolar = await new TaxesController().getCurrentDolar()
