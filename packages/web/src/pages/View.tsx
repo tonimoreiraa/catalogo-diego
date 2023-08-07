@@ -37,7 +37,7 @@ function View()
             <div className="pt-8 grid xl:grid-cols-5 2xl:grid-cols-6 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 sm:grid-cols-2 gap-3">
                 {data?.data?.data?.map((product: any) => <Product key={product.id} product={product} />)}
             </div>
-            {data?.data?.meta?.total ? <div className="w-full flex justify-end">
+            {data?.data?.meta?.total || isLoading || isFetching ? <div className="w-full flex justify-end">
                 <div className="flex items-center justify-start gap-x-2 mt-4">
                     <h1>Total de itens encontrados: {data?.data?.meta?.total}</h1>
                     {!!data?.data?.meta?.previous_page_url && <button className="bg-neutral-200 rounded-lg h-8 w-8 flex items-center justify-center" onClick={() => setPage('/products' + data?.data?.meta?.previous_page_url)}>

@@ -69,7 +69,7 @@ export default class ProductsController {
         return response.badRequest({message: 'Arquivo inválido.'})
     }
 
-    async index({request}: HttpContextContract)
+    async index({ request, auth }: HttpContextContract)
     {
         const dolar = await new TaxesController().getCurrentDolar()
         const page = request.input('page', 1)
@@ -83,11 +83,11 @@ export default class ProductsController {
             .preload('images')
             .preload('category')
             .orderBy('createdAt', 'desc')
+            .if(!auth.user, query => query.whereNotNull('tax'))
             .if(brandId, query => query.where('brandId', brandId))
             .if(categoryId, query => query.where('categoryId', categoryId))
             .if(queryString, query => query.where('title', 'ILIKE', sqlQuery).orWhere('description', 'ILIKE', sqlQuery))
             .paginate(page, perPage)
-        console.log(products)
 
         /* @ts-ignore */
         products.rows = products.rows.map(data => ({...data.serialize(), price: data.getPrice(dolar), price_currency: 'BRL'}))

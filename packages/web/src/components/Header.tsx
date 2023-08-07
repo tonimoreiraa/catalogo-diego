@@ -39,7 +39,7 @@ export default function Header()
                                 <ul className="grid gap-3 p-4 xl:w-[650px] lg:w-[450px] md:w-[300px] lg:grid-cols-[.75fr_1fr]">
                                     {categories.data?.map((category: any) => (
                                         <li key={category.id}>
-                                            <Link to={"/search?categoryId=12" + category.id} className="hover:bg-black hover:bg-opacity-5 rounded-lg p-3 font-normal">
+                                            <Link to={"/search?categoryId=" + category.id} className="hover:bg-black hover:bg-opacity-5 rounded-lg p-3 font-normal">
                                                 {category.name}
                                             </Link>
                                         </li>
