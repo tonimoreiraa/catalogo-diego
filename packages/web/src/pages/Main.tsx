@@ -25,7 +25,7 @@ export default function Main()
         <div className="border-b mb-3 pb-2">
             <h1 className="text-2xl font-semibold">{selectedBrand ? 'Selecione uma categoria' : 'Todas as marcas'}</h1>
         </div>
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {!selectedBrand && brands.data?.map((brand: any) => (
                 <Category
                     key={brand.id}

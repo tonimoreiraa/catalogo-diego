@@ -16,12 +16,12 @@ export default function SearchInput()
         }
     }
 
-    return <div className="relative">
+    return <div className="relative w-full">
         <IoSearch className="absolute left-3 top-2 text-neutral-500" size={24} />
         <Input
             type="search"
             placeholder="Buscar por produto..."
-            className="bg-neutral-100 pl-10 pr-2 placeholder-neutral-500 rounded-xl"
+            className="bg-neutral-100 pl-10 pr-2 placeholder-neutral-500 rounded-xl w-full"
             onKeyDown={handleKeyDown}
             ref={ref}
         />

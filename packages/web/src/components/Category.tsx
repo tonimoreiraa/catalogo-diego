@@ -9,16 +9,16 @@ export default function Category({ name, image, className, ...props }: CategoryT
 {
     return <div
         className={twMerge(
-            "p-1 items-center rounded-xl bg-zinc-100 flex flex-row gap-x-2 cursor-pointer hover:bg-zinc-200",
+            "p-1 min-h-[3rem] items-center rounded-xl bg-zinc-100 flex flex-row cursor-pointer hover:bg-zinc-200",
             className
         )}
         {...props}
     >
-        <img
+        {!!image && <img
             className="w-12 h-12 rounded-lg p-2 object-contain"
             src={image}
             alt={name}
-        />
-        <h1 className="font-semibold text-base">{name}</h1>
+        />}
+        <h1 className="font-semibold text-base ml-2">{name}</h1>
     </div>
 }

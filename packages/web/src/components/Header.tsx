@@ -12,9 +12,9 @@ export default function Header()
     const brands = useQuery('@brands', async () => (await api.get('/brands')).data)
 
     return <div className="px-8 md:px-24">
-        <div className="w-full py-3 border-b border-neutral-200 flex items-center gap-x-4 justify-between">
+        <div className="w-full py-3 border-b border-neutral-200 flex flex-col md:flex-row items-center gap-y-2 gap-x-4 justify-between">
             <div className="flex flex-row gap-x-4">
-                <Link to="/">
+                <Link to="/" className="w-12">
                     <img src="/logo.jpeg" alt="KB Tech" className="h-12" />
                 </Link>
                 <NavigationMenu>
@@ -47,7 +47,7 @@ export default function Header()
                                 </ul>
                             </NavigationMenuContent>
                         </NavigationMenuItem>
-                        <NavigationMenuItem>
+                        <NavigationMenuItem className="hidden md:block">
                             <Link to="https://kbtech.com.br" target="_blank">
                                 <NavigationMenuTrigger>
                                     KB Tech
@@ -57,12 +57,12 @@ export default function Header()
                     </NavigationMenuList>
                 </NavigationMenu>
             </div>
-            <div className="flex gap-x-4">
+            <div className="flex gap-x-4 w-full md:w-auto">
                 <SearchInput />
-                <div className="flex items-center gap-x-1">
+                <Link to="/admin" className="md:flex items-center gap-x-1 hidden">
                     <IoPersonOutline />
                     <h1 className="text-xs">Entrar</h1>
-                </div>
+                </Link>
             </div>
         </div>
     </div>
