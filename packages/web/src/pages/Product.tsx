@@ -33,7 +33,7 @@ const ProductPage = () => {
                         <span className="bg-emerald-500 text-white px-4 py-1 rounded-full">{product.category.name}</span>
                     </div>
                     <div className="mb-4">
-                         <img key={image.id} src={image && !image.includes('default') ? 'https://www.megaeletronicos.com:4420/img/'+ image.replace('/uploads/Product/', '').replaceAll('/', '-') : '/logo.jpeg'} alt="Imagem do Produto" className="w-full max-w-[175px] rounded-lg" />
+                         {image && <img key={image.id} src={image && !image.includes('default') ? 'https://www.megaeletronicos.com:4420/img/'+ image.replace('/uploads/Product/', '').replaceAll('/', '-') : '/logo.jpeg'} alt="Imagem do Produto" className="w-full max-w-[175px] rounded-lg" />}
                     </div>
                     <p className="text-gray-800 text-lg mb-4">{product.title}</p>
                     <p className="text-gray-600 mb-4">Descrição em breve...</p>

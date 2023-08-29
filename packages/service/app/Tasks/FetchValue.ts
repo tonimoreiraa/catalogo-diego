@@ -17,8 +17,8 @@ export default class FetchValue extends BaseTask {
 	}
 
 	public async handle() {
-    	await FetchME()
     	await FetchVV()
+    	await FetchME()
 		await SyncGSheets()
   	}
 }

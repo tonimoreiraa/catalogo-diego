@@ -83,7 +83,7 @@ export default class ProductsController {
             .preload('images')
             .preload('category')
             .orderBy('createdAt', 'desc')
-            .if(!auth.user, query => query.whereNotNull('tax'))
+            .if(!auth.user, query => query.whereNotNull('tax').andWhereNot('tax', 0))
             .if(brandId, query => query.where('brandId', brandId))
             .if(categoryId, query => query.where('categoryId', categoryId))
             .if(queryString, query => query.where('title', 'ILIKE', sqlQuery).orWhere('description', 'ILIKE', sqlQuery))
