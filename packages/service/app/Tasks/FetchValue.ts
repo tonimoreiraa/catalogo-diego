@@ -1,3 +1,4 @@
+import CatalogUpdate from 'App/Models/CatalogUpdate'
 import { FetchME } from 'App/Services/FetchME'
 import { FetchVV } from 'App/Services/FetchVV'
 import { SyncGSheets } from 'App/Services/SyncGSheets'
@@ -20,5 +21,6 @@ export default class FetchValue extends BaseTask {
     	await FetchVV()
     	await FetchME()
 		await SyncGSheets()
+		await CatalogUpdate.create({})
   	}
 }

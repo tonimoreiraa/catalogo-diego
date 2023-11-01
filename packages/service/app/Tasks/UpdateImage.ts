@@ -3,7 +3,7 @@ import { BaseTask } from 'adonis5-scheduler/build'
 
 export default class UpdateImage extends BaseTask {
 	public static get schedule() {
-		return '0 0  * * * *'
+		return '0 0 * * * *'
 	}
 	/**
 	 * Set enable use .lock file for block run retry task
