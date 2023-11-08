@@ -5,6 +5,7 @@ const csvSeparator = ';'
 import fs from 'fs/promises'
 import {parse as csvParser} from 'csv-parse/sync'
 import { bind } from '@adonisjs/route-model-binding'
+import CatalogUpdate from 'App/Models/CatalogUpdate'
 export default class ProductsController {
 
     async export({response}: HttpContextContract)
@@ -105,6 +106,15 @@ export default class ProductsController {
         
 
         return {...product.serialize(), price: product.getPrice(dolar)}
+    }
+
+    async lastUpdate()
+    {
+        const lastUpdate = await CatalogUpdate.query()
+            .orderBy('created_at', 'desc')
+            .firstOrFail()
+
+        return lastUpdate.serialize()
     }
 
 }

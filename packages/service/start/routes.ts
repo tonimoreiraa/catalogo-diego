@@ -10,7 +10,8 @@ Route.group(() => {
     Route.put('/taxes/many-values', 'TaxesController.setMany')
     Route.put('/taxes/:tax/set/:category', 'TaxesController.set') 
     Route.get('/products/export', 'ProductsController.export')   
-    Route.post('/products/import', 'ProductsController.import')   
+    Route.post('/products/import', 'ProductsController.import')
+    Route.get('/last-update', 'ProductsController.lastUpdate')  
 }).middleware('auth')
 
 Route.resource('/products', 'ProductsController')

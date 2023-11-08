@@ -9,6 +9,7 @@ function Products()
 {
     const [page, setPage] = useState('/products')
     const {data, isLoading, refetch} = useQuery('@products', () => api.get(page))
+    const {data: lastUpdate} = useQuery('@last-update', async () => (await api.get('/last-update')).data)
 
     useEffect(() => {refetch()}, [page])
 
@@ -48,7 +49,12 @@ function Products()
         {isLoading ? <>Carregando...</> : <div className="flex justify-center px-8 py-12 bg-white rounded-lg shadow-lg">
             <div className="max-w-[1600px] w-full">
                 <div className="w-full flex items-center justify-between mb-2">
-                    <h1 className="font-bold text-2xl">Produtos</h1>
+                    <div>
+                        <h1 className="font-bold text-2xl">Produtos</h1>
+                        {!!lastUpdate && <h2 className="text-sm text-neutral-600">
+                            Última atualização: {new Date(lastUpdate.created_at).toLocaleString()}
+                        </h2>}
+                    </div>
                     <div className="grid grid-flow-col gap-x-2">
                         <button onClick={exportData} className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 items-center gap-x-2">
                             <IoDownloadOutline size={20} />

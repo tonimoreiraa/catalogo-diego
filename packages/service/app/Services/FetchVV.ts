@@ -20,6 +20,7 @@ export async function FetchVV()
         spreadsheetId: s.spreadsheetId,
         range: `Categoria!A1:Z100`,
     })
+
     const categoryNames = d.data.values?.filter(i => i[2] == source).map(i => i[1]) ?? []
     
     const main = await axios.get('https://www.visaovip.com/lista-preco')
@@ -33,6 +34,8 @@ export async function FetchVV()
         headers: { cookie: main.headers["set-cookie"] },
         responseType: 'arraybuffer'
     })
+
+    console.log(data.toString('utf-8'))
     
     const worksheet = xlsx.parse(data)
     const headers = worksheet[0].data[0]
