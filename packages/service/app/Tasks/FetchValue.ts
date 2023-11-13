@@ -1,7 +1,6 @@
 import CatalogUpdate from 'App/Models/CatalogUpdate'
 import { FetchME } from 'App/Services/FetchME'
 import { FetchVV } from 'App/Services/FetchVV'
-import { SyncGSheets } from 'App/Services/SyncGSheets'
 import UpdateImages from 'App/Services/UpdateImages'
 import { BaseTask } from 'adonis5-scheduler/build'
 
@@ -19,9 +18,8 @@ export default class FetchValue extends BaseTask {
 
 	public async handle() {
 		await CatalogUpdate.create({})
-    	await FetchME()
-		await SyncGSheets()
-		await UpdateImages()
     	await FetchVV()
+    	await FetchME()
+		await UpdateImages()
   	}
 }

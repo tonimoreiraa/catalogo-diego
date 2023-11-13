@@ -22,13 +22,15 @@ export async function FetchVV()
     })
 
     const categoryNames = d.data.values?.filter(i => i[2] == source).map(i => i[1]) ?? []
+
+    console.log(categoryNames)
     
     const main = await axios.get('https://www.visaovip.com/lista-preco')
     const dom = new JSDOM(main.data)
     /* @ts-ignore */
     const viewState = dom.window.document.querySelector('input[name="javax.faces.ViewState"]').value
 
-    const body = "formProdutosListaPreco=formProdutosListaPreco&dtProdutosListaPreco_reflowDD=0_0&dtProdutosListaPreco%3Aj_idt86=&dtProdutosListaPreco_rppDD=20&dtProdutosListaPreco%3Aj_idt91%3Afilter=&dtProdutosListaPreco%3Aj_idt93%3Afilter=&dtProdutosListaPreco%3Aj_idt96_focus=&dtProdutosListaPreco%3Aj_idt96_input=&dtProdutosListaPreco%3Aj_idt101_focus=&dtProdutosListaPreco%3Aj_idt101_input=&dtProdutosListaPreco_rppDD=20&javax.faces.ViewState=" + viewState
+    const body = "formProdutosListaPreco=formProdutosListaPreco&dtProdutosListaPreco_reflowDD=0_0&dtProdutosListaPreco%3Aj_idt89=&dtProdutosListaPreco_rppDD=20&dtProdutosListaPreco%3Aj_idt94%3Afilter=&dtProdutosListaPreco%3Aj_idt96%3Afilter=&dtProdutosListaPreco%3Aj_idt99_focus=&dtProdutosListaPreco%3Aj_idt99_input=&dtProdutosListaPreco%3Aj_idt104_focus=&dtProdutosListaPreco%3Aj_idt104_input=&dtProdutosListaPreco_rppDD=20&javax.faces.ViewState=" + viewState
 
     const {data} = await axios.post("https://www.visaovip.com/lista-preco", body, {
         headers: { cookie: main.headers["set-cookie"] },
