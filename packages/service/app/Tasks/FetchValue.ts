@@ -20,6 +20,5 @@ export default class FetchValue extends BaseTask {
 		await CatalogUpdate.create({})
     	await FetchVV()
     	await FetchME()
-		await UpdateImages()
   	}
 }
