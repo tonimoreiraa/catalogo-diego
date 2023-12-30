@@ -1,5 +1,5 @@
 import { Link, LinkProps } from 'react-router-dom';
-import { MdDashboard, MdCategory, MdExitToApp } from 'react-icons/md';
+import { MdDashboard, MdCategory, MdExitToApp, MdConstruction } from 'react-icons/md';
 import { HTMLAttributes } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { IconType } from 'react-icons';
@@ -32,6 +32,7 @@ export function Layout(props: HTMLAttributes<HTMLDivElement>)
             <ul className="space-y-2 p-4">
                 <LayoutLink to="/products" label="Produtos" icon={MdDashboard} />
                 <LayoutLink to="/categories" label="Categorias" icon={MdCategory} />
+                <LayoutLink to="/tax-rules" label="Regras" icon={MdConstruction} />
             </ul>
         </nav>
             <div className="p-4">

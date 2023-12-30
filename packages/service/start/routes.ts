@@ -12,6 +12,7 @@ Route.group(() => {
     Route.get('/products/export', 'ProductsController.export')   
     Route.post('/products/import', 'ProductsController.import')
     Route.get('/last-update', 'ProductsController.lastUpdate')  
+    Route.resource('/tax-rules', 'TaxRulesController').apiOnly()
 }).middleware('auth')
 
 Route.resource('/products', 'ProductsController')

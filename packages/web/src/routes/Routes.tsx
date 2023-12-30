@@ -6,6 +6,7 @@ import SignIn from "../pages/SignIn";
 import View from "../pages/View";
 import ProductPage from "../pages/Product";
 import Main from "../pages/Main";
+import TaxRules from "@/pages/TaxRules";
 
 function AppRoutes()
 {
@@ -13,6 +14,7 @@ function AppRoutes()
 
     return <Routes>
         {auth.authenticated ? <>
+            <Route path="/tax-rules" element={<TaxRules />} />
             <Route path="/categories" element={<Categories />} />
             <Route path="/products" element={<Products />} />
             <Route path="*" element={<Navigate to="/products" />} />
