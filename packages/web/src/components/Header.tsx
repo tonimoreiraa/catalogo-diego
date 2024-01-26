@@ -1,6 +1,5 @@
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
-import { Input } from "@/components/ui/input";
-import { IoPersonOutline, IoSearch } from "react-icons/io5";
+import { IoPersonOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
 import api from "@/services/api";

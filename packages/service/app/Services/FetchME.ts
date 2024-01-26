@@ -24,6 +24,7 @@ export async function FetchME()
     const brandNames = Object.fromEntries(data.data.values?.filter(item => item[2] == source).map(item => [Number(item[1]), item[3]]))
 
     const brands = Object.keys(brandNames)
+    const productIDs: number[] = []
 
     for (const brandMeId of brands) {
 
@@ -65,6 +66,7 @@ export async function FetchME()
                 costCurrency: 'USD',
                 brandId: brand.id
             })
+            productIDs.push(product.id)
 
             if (!exists) {
                 await ProductImage.createMany(productData.imagenes.map(i => ({productId: product.id, image: 'https://www.megaeletronicos.com:4420/img/'+ i.replace('/uploads/Product/', '').replaceAll('/', '-')})))
@@ -81,4 +83,7 @@ export async function FetchME()
             }
         }
     }
+    await Product.query().delete().from('products')
+        .where('identifier', 'LIKE', 'me-%')
+        .andWhereNot('id', 'IN', productIDs)
 }
