@@ -3,7 +3,6 @@ import { credentials } from '../config/google'
 import { google } from 'googleapis'
 import { spreadsheet } from '../config/google'
 import ProductCost from 'App/Models/ProductCost'
-import { string } from '@ioc:Adonis/Core/Helpers'
 
 export default class SheetSync extends BaseCommand {
   /**
@@ -64,6 +63,7 @@ export default class SheetSync extends BaseCommand {
       const data = [['Título', 'Marca', 'Fornecedor', 'Custo'], ...products]
       const range = `${provider}!A1:${String.fromCharCode(65 + data[0].length - 1)}${data.length}`
 
+      /* @ts-ignore */
       await sheets.spreadsheets.values.update({
         spreadsheetId: spreadsheet().spreadsheetId,
         range,
